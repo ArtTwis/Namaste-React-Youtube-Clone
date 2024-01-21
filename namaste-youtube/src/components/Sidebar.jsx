@@ -1,11 +1,17 @@
+import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { appActions } from "../redux/appSlice";
+
 const Sidebar = () => {
+  const dispatch = useDispatch();
+
   return (
     <div className="border-r-2 h-screen pr-3 min-w-60 max-w-60 overflow-y-auto">
       <div className="mt-3 pl-2">
         <ul className="space-y-2 font-medium">
           <li>
-            <a
-              href="/"
+            <Link
+              to="/"
               className="flex items-center p-1 text-gray-900 rounded-lg hover:bg-gray-100">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -17,7 +23,7 @@ const Sidebar = () => {
                 <path d="M 12 2.0996094 L 1 12 L 4 12 L 4 21 L 10 21 L 10 15 L 14 15 L 14 21 L 20 21 L 20 12 L 23 12 L 12 2.0996094 z"></path>
               </svg>
               <span className="ms-3">Home</span>
-            </a>
+            </Link>
           </li>
           <li>
             <a

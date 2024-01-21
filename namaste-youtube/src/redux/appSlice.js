@@ -5,10 +5,13 @@ const appSlice = createSlice({
   name: "app",
   initialState: appInitialState,
   reducers: {
-    toggleSidebar: (state) => {
+    toggleSidebar: (state, { payload }) => {
       state.isSidebarOpen = !state.isSidebarOpen;
     },
-    addVideos: (state, {payload}) => {
+    toggleMenuOption: (state, { payload }) => {
+      state.isSidebarOpen = payload;
+    },
+    addVideos: (state, { payload }) => {
       state.videos = payload;
     },
   },

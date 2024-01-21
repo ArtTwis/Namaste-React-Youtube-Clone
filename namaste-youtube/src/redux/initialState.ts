@@ -1,9 +1,11 @@
 export type appInitialStateType = {
     isSidebarOpen: boolean,
-    videos: []
+    videos: [],
+    comments: []
 };
 
 export const appInitialState : appInitialStateType = {
     isSidebarOpen: true,
-    videos: []
+    videos: [],
+    comments: []
 }

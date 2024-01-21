@@ -14,6 +14,9 @@ const appSlice = createSlice({
     addVideos: (state, { payload }) => {
       state.videos = payload;
     },
+    addComments: (state, {payload}) => {
+      state.comments = payload;
+    }
   },
 });
 

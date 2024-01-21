@@ -13,3 +13,8 @@ export const selectVideos = createSelector(
   [selectDomain],
   (state) => state.videos
 );
+
+export const selectComments = createSelector(
+  [selectDomain],
+  (state) => state.comments
+);

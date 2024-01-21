@@ -1,74 +1,95 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { appActions } from "../redux/appSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
-import { selectVideos } from "../redux/appSelector";
-import YoutubeIcon from "../assets/icons/YoutubeIcon.png";
+import { selectComments, selectVideos } from "../redux/appSelector";
+import {
+  YOUTUBE_API_KEY,
+  YOUTUBE_API_URL,
+  YOUTUBE_VIDEO_COMMENTS_API_URL,
+} from "../utils/constant";
+import IFrame from "../components/IFrame";
+import IFrameDescription from "../components/IFrameDescription";
+import CommentCard from "../components/CommentCard";
 
 const WatchPage = () => {
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
+  const [videoId, setVideoId] = useState(searchParams.get("v"));
   const videos = useSelector(selectVideos);
+  const comments = useSelector(selectComments);
 
   const selectedVideo = videos.find((video) => {
     return video.id === searchParams.get("v");
   });
 
-  const { tags } = selectedVideo;
+  const getComments = async () => {
+    const data = await fetch(
+      YOUTUBE_VIDEO_COMMENTS_API_URL +
+        searchParams.get("v") +
+        "&key=" +
+        YOUTUBE_API_KEY
+    );
+    const response = await data.json();
+    const comments = response.items.map((item) => {
+      return {
+        id: item?.id,
+        channelId: item?.snippet?.channelId,
+        videoId: item?.snippet?.videoId,
+        textOrignal: item?.snippet?.topLevelComment?.snippet?.textOriginal,
+        authorDisplayName: item?.snippet?.topLevelComment?.snippet?.authorDisplayName,
+        authorDisplayImageUrl: item?.snippet?.topLevelComment?.snippet?.authorProfileImageUrl
+      }
+    })
+
+    dispatch(appActions.addComments(comments));
+  };
 
   useEffect(() => {
     dispatch(appActions.toggleMenuOption(false));
   }, []);
 
+  useEffect(() => {
+    getComments();
+  }, [videoId]);
+
+  const getVideos = async () => {
+    const data = await fetch(YOUTUBE_API_URL);
+    const response = await data.json();
+    const videos = response.items.map((item) => {
+      return {
+        id: item?.id,
+        title: item?.snippet?.title,
+        thumbnail: item?.snippet?.thumbnails?.standard?.url,
+        channelTitle: item?.snippet?.channelTitle,
+        tags: item?.snippet?.tags,
+        duration: item?.contentDetails?.duration,
+        viewCount: item?.statistics?.viewCount,
+      };
+    });
+    dispatch(appActions.addVideos(videos));
+  };
+
+  useEffect(() => {
+    getVideos();
+  }, []);
+
   return (
-    <div>
-      <iframe
-        width="1300"
-        height="600 "
-        src={"https://www.youtube.com/embed/" + searchParams.get("v")}
-        title="YouTube video player"
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowFullScreen
-        className="m-7 rounded-2xl"></iframe>
-      <h1 className="text-2xl font-bold ml-8">{selectedVideo?.title}</h1>
-      <div className="flex flex-row items-center m-3">
-        <h5 className="ml-8 text-lg font-bold tracking-tight text-gray-900">
-          {selectedVideo?.channelTitle}
-        </h5>
-        <div className="ml-4 border border-gray-300 rounded-lg flex flex-row items-center px-3 py-1">
-          <img alt="Youtu.be" src={YoutubeIcon} />
-          <h5 className="ml-1 text-lg font-bold tracking-tight text-gray-900">
-            Subscribe
-          </h5>
-        </div>
+    <div className="grid grid-cols-3 gap-4 w-full">
+      <div className="col-span-2 h-auto">
+        <IFrame videoId={videoId} />
+        <IFrameDescription selectedVideo={selectedVideo} />
       </div>
-      {tags ? (
-        <div className="flex flex-row">
-          <h5 className="mb-1 ml-8 text-base font-semibold tracking-tight text-gray-900">
-            {tags[0]}, {tags[1]}, {tags[2]} and more
-          </h5>
-          &nbsp;
-          <h5 className="mb-1 ml-8 text-lg font-bold tracking-tight border border-gray-300 text-black py-1 px-2 rounded-lg w-fit text-xs flex flex-row">
-            {selectedVideo?.viewCount}
-            <svg
-              className="ml-2"
-              width="15px"
-              height="15px"
-              viewBox="0 0 32 32"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M4.001 21C5.001 24 8.001 29 16.001 29C24.001 29 27.001 24 28.001 21M31 19C31 17 27.001 7 16 7M16 7C5.001 7 1 17 1 19M16 7V3M21.1758 3.6816L20.1758 7.4106M26 5.6797L23.999 9.1427M30.1416 8.8574L27.3136 11.6844M10.8223 3.6816L11.8213 7.4106M5.999 5.6797L7.999 9.1437M1.8574 8.8574L4.6854 11.6854M16.001 12C12.688 12 10.001 14.687 10.001 18C10.001 21.313 12.688 24 16.001 24C19.314 24 22.001 21.313 22.001 18M21.2441 15.0869C20.7001 14.1089 19.8911 13.3009 18.9141 12.7569M18.001 18C18.001 16.896 17.105 16 16.001 16C14.897 16 14.001 16.896 14.001 18C14.001 19.104 14.897 20 16.001 20C17.105 20 18.001 19.104 18.001 18Z"
-                stroke="#000000"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </h5>
+      <div className="col-span-1 min-h-[700px] max-h-[700px] m-7 rounded-2xl border border-slate-300 overflow-y-scroll">
+        <div className="h-16 bg-gray-500 flex items-center">
+          <label className="mx-5 text-xl font-bold text-white">Comments</label>
         </div>
-      ) : null}
+        {
+          comments.map((item) => {
+            return <CommentCard item={item} key={item?.id} />
+          })
+        }
+      </div>
     </div>
   );
 };

@@ -14,7 +14,6 @@ const VideoContainer = () => {
     const data = await fetch(YOUTUBE_API_URL);
     const response = await data.json();
     const videos = response.items.map((item) => {
-      console.log('item :', item);
       return {
         id: item?.id,
         title: item?.snippet?.title,

@@ -31,7 +31,7 @@ const WatchPage = () => {
         YOUTUBE_API_KEY
     );
     const response = await data.json();
-    const comments = response.items.map((item) => {
+    const commentsList = response.items.map((item) => {
       return {
         id: item?.id,
         channelId: item?.snippet?.channelId,
@@ -42,7 +42,7 @@ const WatchPage = () => {
       }
     })
 
-    dispatch(appActions.addComments(comments));
+    dispatch(appActions.addComments(commentsList));
   };
 
   useEffect(() => {

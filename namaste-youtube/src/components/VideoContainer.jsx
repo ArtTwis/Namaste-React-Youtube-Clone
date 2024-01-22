@@ -52,9 +52,9 @@ const VideoContainer = () => {
                   {item.channelTitle}
                 </h5>
                 <div className="mb-1 text-sm tracking-tight bg-gray-300 text-black py-1 px-2 rounded-lg w-fit text-xs">
-                  {duration.hours ? duration.hours + "hours" : null}{" "}
-                  {duration.minutes ? duration.minutes + " min" : null}{" "}
-                  {duration.seconds ? duration.seconds + " sec" : null}
+                  {duration?.hours ? duration?.hours + "hours" : null}{" "}
+                  {duration?.minutes ? duration?.minutes + " min" : null}{" "}
+                  {duration?.seconds ? duration?.seconds + " sec" : null}
                 </div>
                 {tags ? (
                   <h5 className="mb-1 text-xs tracking-tight text-gray-900">

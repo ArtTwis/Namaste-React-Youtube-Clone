@@ -9,3 +9,11 @@ export const appInitialState : appInitialStateType = {
     videos: [],
     comments: []
 }
+
+export type cacheInitialStateType = {
+    cacheResult: {}
+};
+
+export const cacheInitialState : cacheInitialStateType = {
+    cacheResult: {}
+}

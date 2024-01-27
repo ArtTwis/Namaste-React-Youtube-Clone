@@ -12,7 +12,7 @@ const MainContainer = () => {
   }, []);
 
   return (
-    <div className="overscroll-none">
+    <div className="overflow-y-scroll">
       <ButtonList />
       <VideoContainer />
     </div>

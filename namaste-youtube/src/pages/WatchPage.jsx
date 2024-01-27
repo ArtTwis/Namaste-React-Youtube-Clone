@@ -10,14 +10,14 @@ import {
 } from "../utils/constant";
 import IFrame from "../components/IFrame";
 import IFrameDescription from "../components/IFrameDescription";
-import CommentCard from "../components/CommentCard";
+import { CommentList } from "../components/CommentCard";
 
 const WatchPage = () => {
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const [videoId, setVideoId] = useState(searchParams.get("v"));
   const videos = useSelector(selectVideos);
-  const comments = useSelector(selectComments);
+  const selectedComments = useSelector(selectComments);
 
   const selectedVideo = videos.find((video) => {
     return video.id === searchParams.get("v");
@@ -30,17 +30,20 @@ const WatchPage = () => {
         "&key=" +
         YOUTUBE_API_KEY
     );
-    const response = await data.json();
-    const commentsList = response.items.map((item) => {
+    const json = await data.json();
+    const commentsList = json.items.map((item) => {
       return {
         id: item?.id,
         channelId: item?.snippet?.channelId,
         videoId: item?.snippet?.videoId,
         textOrignal: item?.snippet?.topLevelComment?.snippet?.textOriginal,
-        authorDisplayName: item?.snippet?.topLevelComment?.snippet?.authorDisplayName,
-        authorDisplayImageUrl: item?.snippet?.topLevelComment?.snippet?.authorProfileImageUrl
-      }
-    })
+        authorDisplayName:
+          item?.snippet?.topLevelComment?.snippet?.authorDisplayName,
+        authorDisplayImageUrl:
+          item?.snippet?.topLevelComment?.snippet?.authorProfileImageUrl,
+        replies: item?.replies ? item?.replies?.comments : null,
+      };
+    });
 
     dispatch(appActions.addComments(commentsList));
   };
@@ -65,6 +68,7 @@ const WatchPage = () => {
         tags: item?.snippet?.tags,
         duration: item?.contentDetails?.duration,
         viewCount: item?.statistics?.viewCount,
+        replies: item?.replies ? item?.replies : null,
       };
     });
     dispatch(appActions.addVideos(videos));
@@ -80,15 +84,16 @@ const WatchPage = () => {
         <IFrame videoId={videoId} />
         <IFrameDescription selectedVideo={selectedVideo} />
       </div>
-      <div className="col-span-1 min-h-[700px] max-h-[700px] m-7 rounded-2xl border border-slate-300 overflow-y-scroll">
-        <div className="h-16 bg-gray-500 flex items-center">
+      <div className="col-span-1 min-h-[600px] max-h-[600px] m-7 rounded-2xl border border-slate-300 overflow-hidden">
+        <div className="h-[75px] bg-gray-500 flex items-center sticky">
           <label className="mx-5 text-xl font-bold text-white">Comments</label>
         </div>
-        {
-          comments.map((item) => {
-            return <CommentCard item={item} key={item?.id} />
-          })
-        }
+        <div className="h-[524px] p-2 overflow-y-scroll">
+          {/* {selectedComments.map((item) => {
+            return <CommentCard item={item} key={item?.id} />;
+          })} */}
+          <CommentList comments={selectedComments} />
+        </div>
       </div>
     </div>
   );

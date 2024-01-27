@@ -20,7 +20,7 @@ const Header = () => {
     dispatch(appActions.toggleSidebar());
   };
 
-  const handleClick = (e) => {
+  const handleListItemClick = (e) => {
     setSearchQuery(e.target.getAttribute("data-suggestion-item"));
     setDisplaySuggestionList(false);
   };
@@ -81,7 +81,7 @@ const Header = () => {
   }, [searchQuery]);
 
   return (
-    <div className="flex flex-row justify-between h-14 border border-b-2 border-gray-200 shadow-sm px-7">
+    <div className="flex flex-row justify-between h-14 border border-b-2 border-gray-200 shadow-sm px-7 header-part">
       <div className="flex flex-row items-center">
         <img
           src={MenuIcon}
@@ -106,14 +106,14 @@ const Header = () => {
             onFocus={() => setDisplaySuggestionList(true)}
           />
           {suggestionList && displaySuggestionList && (
-            <div className="absolute top-10 bg-gray-100 p-5 rounded-lg min-w-96 max-w-96 shadow-lg">
-              <ul>
+            <div className="absolute top-10 bg-gray-100 p-5 rounded-lg min-w-96 max-w-96 shadow-lg z-10">
+              <ul className="">
                 {suggestionList.map((item, index) => (
                   <li
                     key={"suggestion-" + index}
                     className="hover:bg-slate-200 py-1 px-2 rounded cursor-pointer text-nowrap text-ellipsis"
                     data-suggestion-item={item}
-                    onClick={handleClick}>
+                    onClick={handleListItemClick}>
                     🔍 {item}
                   </li>
                 ))}

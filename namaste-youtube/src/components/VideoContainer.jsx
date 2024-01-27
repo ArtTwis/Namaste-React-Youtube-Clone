@@ -32,7 +32,7 @@ const VideoContainer = () => {
   }, []);
 
   return (
-    <div className="flex flex-row flex-wrap">
+    <div className="flex flex-row flex-wrap overflow-y-scroll">
       {videos.map((item) => {
         const { tags } = item;
         const duration = convertYouTubeDuration(item.duration);

@@ -7,7 +7,7 @@ const Body = () => {
   const isSidebarOpen = useSelector(selectIsSidebarOpen);
 
   return (
-    <div className="flex flex-row">
+    <div className="main-container flex flex-row overflow-y-hidden">
       {isSidebarOpen && <Sidebar />}
       <Outlet />
     </div>

@@ -6,7 +6,7 @@ const Sidebar = () => {
   const dispatch = useDispatch();
 
   return (
-    <div className="border-r-2 h-screen pr-3 min-w-60 max-w-60 overflow-y-auto">
+    <div className="border-r-2 h-screen pr-3 min-w-60 max-w-60">
       <div className="mt-3 pl-2">
         <ul className="space-y-2 font-medium">
           <li>

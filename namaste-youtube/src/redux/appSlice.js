@@ -14,9 +14,29 @@ const appSlice = createSlice({
     addVideos: (state, { payload }) => {
       state.videos = payload;
     },
-    addComments: (state, {payload}) => {
+    addComments: (state, { payload }) => {
+      payload.map((comment) => {
+        if (comment.replies) {
+          comment.replies = comment.replies.map((reply) => {
+            return {
+              id: reply?.id,
+              channelId: reply?.snippet?.channelId,
+              videoId: reply?.snippet?.videoId,
+              textOrignal:
+              reply?.snippet?.textOriginal,
+              authorDisplayName:
+              reply?.snippet?.authorDisplayName,
+              authorDisplayImageUrl:
+              reply?.snippet?.authorProfileImageUrl,
+            };
+          });
+          return comment;
+        } else {
+          return comment;
+        }
+      });
       state.comments = payload;
-    }
+    },
   },
 });
 

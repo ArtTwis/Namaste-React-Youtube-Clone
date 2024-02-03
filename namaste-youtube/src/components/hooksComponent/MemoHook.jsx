@@ -8,14 +8,13 @@ const MemoHook = () => {
   const [isDark, setIsDark] = useState(true);
 
   const nthPrime = useMemo(() => {
-    getNthPrime(inputText);
+    return getNthPrime(inputText);
   }, [inputText]);
-
 
   return (
     <div
       className={
-        "flex justify-center items-center flex-col m-12 rounded-xl border min-h-80 min-w-80 max-h-80 max-w-80 " +
+        "flex justify-center items-center flex-col m-6 rounded-xl border min-h-80 min-w-80 max-h-80 max-w-80 " +
         (isDark ? "bg-gray-700 border-white " : "bg-white border-gray-700 ")
       }>
       <input
